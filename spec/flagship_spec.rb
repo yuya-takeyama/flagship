@@ -46,8 +46,8 @@ RSpec.describe Flagship do
         Flagship.define(:foo) do
           enable :true_flag
           disable :false_flag
-          enable :lambda_true_flag, if: -> { true }
-          enable :lambda_false_flag, if: -> { false }
+          enable :lambda_true_flag, if: ->(context) { true }
+          enable :lambda_false_flag, if: ->(context) { false }
         end
 
         Flagship.set_flagset(:foo)
@@ -78,6 +78,22 @@ RSpec.describe Flagship do
           end
         end
       end
+    end
+  end
+
+  describe '.set_context' do
+    it 'sets context variable which is accessible from :if block' do
+      Flagship.set_context :var, 'VAR'
+
+      Flagship.define :foo do
+        enable :bar, if: ->(context) { context.var == 'VAR' }
+        enable :baz, if: ->(context) { context.var != 'VAR' }
+      end
+
+      Flagship.set_flagset(:foo)
+
+      expect(Flagship.enabled?(:bar)).to be true
+      expect(Flagship.enabled?(:baz)).to be false
     end
   end
 end
