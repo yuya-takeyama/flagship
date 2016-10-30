@@ -6,8 +6,9 @@ require "flagship/flagsets_container"
 module Flagship
   class NoFlagsetSelectedError < ::StandardError; end
 
-  def self.define(key, &block)
-    self.default_flagsets_container.add ::Flagship::Dsl.new(key, &block).flagset
+  def self.define(key, options = {}, &block)
+    base = options[:extend] ? self.get_flagset(options[:extend]) : nil
+    self.default_flagsets_container.add ::Flagship::Dsl.new(key, base, &block).flagset
   end
 
   def self.enabled?(key)
@@ -16,6 +17,10 @@ module Flagship
 
   def self.set_flagset(key)
     @@current_flagset = self.default_flagsets_container.get(key)
+  end
+
+  def self.get_flagset(key)
+    self.default_flagsets_container.get(key)
   end
 
   def self.default_flagsets_container
