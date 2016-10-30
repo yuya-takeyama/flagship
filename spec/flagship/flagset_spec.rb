@@ -34,6 +34,24 @@ RSpec.describe Flagship::Flagset do
         it { expect(flagset.enabled?(:lambda_false_flag)).to be false }
       end
     end
+
+    describe 'override by env' do
+      before do
+        stub_env(
+          FLAGSHIP_TRUE_FLAG: '0',
+          FLAGSHIP_FALSE_FLAG: '1',
+          FLAGSHIP_LAMBDA_TRUE_FLAG: 'false',
+          FLAGSHIP_LAMBDA_FALSE_FLAG: 'true',
+        )
+      end
+
+      it 'changes flags' do
+        expect(flagset.enabled?(:true_flag)).to be false
+        expect(flagset.enabled?(:false_flag)).to be true
+        expect(flagset.enabled?(:lambda_true_flag)).to be false
+        expect(flagset.enabled?(:lambda_false_flag)).to be true
+      end
+    end
   end
 
   describe 'extending' do
@@ -86,5 +104,9 @@ RSpec.describe Flagship::Flagset do
         expect(flagset.enabled?(:new_lambda_false_flag)).to be false
       end
     end
+  end
+
+  def stub_env(hash = {})
+    stub_const 'ENV', ENV.to_hash.merge(hash.map{|k, v| [k.to_s, v] }.to_h)
   end
 end

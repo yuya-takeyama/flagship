@@ -11,6 +11,17 @@ class Flagship::Flagset
   def enabled?(key, if: nil)
     raise UndefinedFlagError.new("The flag :#{key} is not defined") unless @flags.key? key
 
+    env = ENV['FLAGSHIP_' + key.to_s.upcase]
+
+    if env
+      case env.downcase
+      when '1', 'true'
+        return true
+      when '0', 'false', ''
+        return false
+      end
+    end
+
     flag = @flags[key]
 
     if flag.respond_to?(:call)
