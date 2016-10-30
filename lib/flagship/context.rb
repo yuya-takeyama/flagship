@@ -9,7 +9,13 @@ class Flagship::Context
 
   def method_missing(name, args = [], &block)
     if @values.key?(name)
-      values[name]
+      value = @values[name]
+
+      if value.respond_to?(:call)
+        value.call
+      else
+        value
+      end
     else
       super
     end

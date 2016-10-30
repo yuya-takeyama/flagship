@@ -95,5 +95,19 @@ RSpec.describe Flagship do
       expect(Flagship.enabled?(:bar)).to be true
       expect(Flagship.enabled?(:baz)).to be false
     end
+
+    it 'sets context method which is callable from :if block' do
+      Flagship.set_context :var, -> { 'VAR' }
+
+      Flagship.define :foo do
+        enable :bar, if: ->(context) { context.var == 'VAR' }
+        enable :baz, if: ->(context) { context.var != 'VAR' }
+      end
+
+      Flagship.set_flagset(:foo)
+
+      expect(Flagship.enabled?(:bar)).to be true
+      expect(Flagship.enabled?(:baz)).to be false
+    end
   end
 end
