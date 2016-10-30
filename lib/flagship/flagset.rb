@@ -1,10 +1,10 @@
 class Flagship::Flagset
-  attr_reader :name
+  attr_reader :key
 
   class UndefinedFlagError < ::StandardError; end
 
-  def initialize(name, flags)
-    @name = name
+  def initialize(key, flags)
+    @key = key
     @flags = flags
   end
 
