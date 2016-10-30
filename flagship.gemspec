@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Yuya Takeyama"]
   spec.email         = ["sign.of.the.wolf.pentagram@gmail.com"]
 
-  spec.summary       = %q{Ship features using flags}
-  spec.description   = %q{Ship features using flags}
+  spec.summary       = %q{Ship/unship features using flags defined with declarative DSL}
+  spec.description   = %q{Ship/unship features using flags defined with declarative DSL}
   spec.homepage      = "https://github.com/yuya-takeyama/flagship"
   spec.license       = "MIT"
 
