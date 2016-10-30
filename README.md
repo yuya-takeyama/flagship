@@ -1,8 +1,6 @@
-# Flagship
+# :flags: Flagship :ship:
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/flagship`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+Ship/unship features using flags defined with declarative DSL.
 
 ## Installation
 
@@ -22,7 +20,71 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Define and use a flagset
+
+```rb
+Flagship.define :app do
+  enable  :stable_feature
+  enable  :experimental_feature, if: ->(context) { context.current_user.staff? }
+  disable :deprecate_feature
+end
+
+Flagship.set_flagset(:app)
+```
+
+### Branch with a flag
+
+```rb
+if Flagship.enabled?(:some_feature)
+  # Implement the feature here
+end
+```
+
+### Set context variables
+
+Both of below can be called as `context.foo` from `:if` block.
+
+```rb
+# Set a value
+Flagship.set_context :foo, 'FOO'
+
+# Set a lambda
+Flagship.set_context :foo, ->(context) { 'FOO' }
+```
+
+Or you can set a method too.
+
+```rb
+Flagship.set_method :current_user, method(:current_user)
+```
+
+### Extend flagset
+
+```rb
+Flagship.define :common do
+  enable :stable_feature
+end
+
+Flagship.define :development, extend: :common do
+  enable :experimental_feature
+end
+
+Flagship.define :production, extend: :common do
+  disable :experimental_feature
+end
+
+if Rails.env.production?
+  Flagset.set_flagset(:production)
+else
+  Flagset.set_flagset(:development)
+end
+```
+
+### Override flag with ENV
+
+You can override flags with ENV named `FLAG_***`.
+
+Assuming that there is a flag `:foo`, you can override it with ENV `FLAGSHIP_FOO=1`.
 
 ## Development
 
@@ -32,10 +94,9 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/flagship.
+Bug reports and pull requests are welcome on GitHub at https://github.com/yuya-takeyama/flagship.
 
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
