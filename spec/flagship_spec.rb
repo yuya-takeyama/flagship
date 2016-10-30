@@ -13,6 +13,23 @@ RSpec.describe Flagship do
 
       expect(flagset.enabled?(:bar)).to be true
     end
+
+    context 'with :extend option' do
+      it 'extends base flagset' do
+        Flagship.define(:base) do
+          enable :foo
+        end
+
+        Flagship.define(:extending, extend: :base) do
+          enable :bar
+        end
+
+        flagset = Flagship.default_flagsets_container.get(:extending)
+
+        expect(flagset.enabled?(:foo)).to be true
+        expect(flagset.enabled?(:bar)).to be true
+      end
+    end
   end
 
   describe '.enabled?' do

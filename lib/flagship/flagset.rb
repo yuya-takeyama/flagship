@@ -1,11 +1,11 @@
 class Flagship::Flagset
-  attr_reader :key
+  attr_reader :key, :flags
 
   class UndefinedFlagError < ::StandardError; end
 
-  def initialize(key, flags)
+  def initialize(key, flags, base = nil)
     @key = key
-    @flags = flags
+    @flags = base ? base.flags.merge(flags) : flags
   end
 
   def enabled?(key, if: nil)
