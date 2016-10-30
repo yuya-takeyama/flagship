@@ -1,12 +1,14 @@
 RSpec.describe Flagship::Flagset do
+  let(:context) { ::Flagship::Context.new }
+
   describe '#enabled?' do
     let(:flagset) do
       described_class.new(:foo, {
         true_flag: true,
         false_flag: false,
-        lambda_true_flag: -> { true },
-        lambda_false_flag: -> { false },
-      })
+        lambda_true_flag: ->(context) { true },
+        lambda_false_flag: ->(context) { false },
+      }, context)
     end
 
     context 'when flag is not defined' do
@@ -59,13 +61,13 @@ RSpec.describe Flagship::Flagset do
       described_class.new(:base, {
         true_flag: true,
         false_flag: false,
-        lambda_true_flag: -> { true },
-        lambda_false_flag: -> { false },
-      })
+        lambda_true_flag: ->(context) { true },
+        lambda_false_flag: ->(context) { false },
+      }, context)
     end
 
     it 'extends base flagset' do
-      flagset = described_class.new(:extending, {}, base)
+      flagset = described_class.new(:extending, {}, context, base)
 
       expect(flagset.enabled?(:true_flag)).to be true
       expect(flagset.enabled?(:false_flag)).to be false
@@ -78,9 +80,9 @@ RSpec.describe Flagship::Flagset do
         flagset = described_class.new(:extending, {
           true_flag: false,
           false_flag: true,
-          lambda_true_flag: -> { false },
-          lambda_false_flag: -> { true },
-        }, base)
+          lambda_true_flag: ->(context) { false },
+          lambda_false_flag: ->(context) { true },
+        }, context, base)
 
         expect(flagset.enabled?(:true_flag)).to be false
         expect(flagset.enabled?(:false_flag)).to be true
@@ -94,9 +96,9 @@ RSpec.describe Flagship::Flagset do
         flagset = described_class.new(:extending, {
           new_true_flag: true,
           new_false_flag: false,
-          new_lambda_true_flag: -> { true },
-          new_lambda_false_flag: -> { false },
-        }, base)
+          new_lambda_true_flag: ->(context) { true },
+          new_lambda_false_flag: ->(context) { false },
+        }, context, base)
 
         expect(flagset.enabled?(:new_true_flag)).to be true
         expect(flagset.enabled?(:new_false_flag)).to be false

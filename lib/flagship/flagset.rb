@@ -3,9 +3,10 @@ class Flagship::Flagset
 
   class UndefinedFlagError < ::StandardError; end
 
-  def initialize(key, flags, base = nil)
+  def initialize(key, flags, context, base = nil)
     @key = key
     @flags = base ? base.flags.merge(flags) : flags
+    @context = context
   end
 
   def enabled?(key, if: nil)
@@ -25,7 +26,7 @@ class Flagship::Flagset
     flag = @flags[key]
 
     if flag.respond_to?(:call)
-      !!@flags[key].call
+      !!@flags[key].call(@context)
     else
       !!@flags[key]
     end

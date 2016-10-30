@@ -1,8 +1,9 @@
 class Flagship::Dsl
   class InvalidOptionError < ::StandardError; end
 
-  def initialize(key, base = nil, &block)
+  def initialize(key, context, base = nil, &block)
     @key = key
+    @context = context
     @base = base
     @flags = {}
     @definition = block
@@ -24,6 +25,6 @@ class Flagship::Dsl
 
   def flagset
     instance_eval(&@definition)
-    ::Flagship::Flagset.new(@key, @flags, @base)
+    ::Flagship::Flagset.new(@key, @flags, @context, @base)
   end
 end

@@ -1,6 +1,8 @@
 RSpec.describe Flagship::Dsl do
+  let(:context) { ::Flagship::Context.new }
+
   it 'creates a flagset with specified key' do
-    flagset = ::Flagship::Dsl.new(:foo) {
+    flagset = ::Flagship::Dsl.new(:foo, context) {
       # noop
     }.flagset
 
@@ -10,7 +12,7 @@ RSpec.describe Flagship::Dsl do
   describe '#enable' do
     context 'without options' do
       it 'enables specified feature' do
-        dsl = ::Flagship::Dsl.new(:foo) do
+        dsl = ::Flagship::Dsl.new(:foo, context) do
           enable :bar
         end
 
@@ -21,8 +23,8 @@ RSpec.describe Flagship::Dsl do
     context 'with :if option' do
       context 'and specified lambda returns true' do
         it 'enables specified feature' do
-          dsl = ::Flagship::Dsl.new(:foo) do
-            enable :bar, if: -> { true }
+          dsl = ::Flagship::Dsl.new(:foo, context) do
+            enable :bar, if: ->(context) { true }
           end
 
           expect(dsl.flagset.enabled?(:bar)).to be true
@@ -31,8 +33,8 @@ RSpec.describe Flagship::Dsl do
 
       context 'and specified lambda returns false' do
         it 'enables specified feature' do
-          dsl = ::Flagship::Dsl.new(:foo) do
-            enable :bar, if: -> { false }
+          dsl = ::Flagship::Dsl.new(:foo, context) do
+            enable :bar, if: ->(context) { false }
           end
 
           expect(dsl.flagset.enabled?(:bar)).to be false
@@ -44,7 +46,7 @@ RSpec.describe Flagship::Dsl do
   describe '#disable' do
     context 'without options' do
       it 'disables specified feature' do
-        dsl = ::Flagship::Dsl.new(:foo) do
+        dsl = ::Flagship::Dsl.new(:foo, context) do
           disable :bar
         end
 
@@ -55,7 +57,7 @@ RSpec.describe Flagship::Dsl do
     context 'with :if option' do
       it 'raises InvalidOptionError' do
         expect {
-          dsl = ::Flagship::Dsl.new(:foo) do
+          dsl = ::Flagship::Dsl.new(:foo, context) do
             disable :bar, if: -> { true }
           end
 
