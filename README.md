@@ -55,7 +55,7 @@ Flagship.set_context :foo, ->(context) { 'FOO' }
 Or you can set a method too.
 
 ```rb
-Flagship.set_method :current_user, method(:current_user)
+Flagship.set_context :current_user, method(:current_user)
 ```
 
 ### Extend flagset
