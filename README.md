@@ -74,15 +74,15 @@ Flagship.define :production, extend: :common do
 end
 
 if Rails.env.production?
-  Flagset.set_flagset(:production)
+  Flagship.set_flagset(:production)
 else
-  Flagset.set_flagset(:development)
+  Flagship.set_flagset(:development)
 end
 ```
 
 ### Override flag with ENV
 
-You can override flags with ENV named `FLAG_***`.
+You can override flags with ENV named `FLAGSHIP_***`.
 
 Assuming that there is a flag `:foo`, you can override it with ENV `FLAGSHIP_FOO=1`.
 
