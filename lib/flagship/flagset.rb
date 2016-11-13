@@ -9,7 +9,7 @@ class Flagship::Flagset
     @context = context
   end
 
-  def enabled?(key, if: nil)
+  def enabled?(key)
     raise UndefinedFlagError.new("The flag :#{key} is not defined") unless @flags.key? key
 
     env = ENV['FLAGSHIP_' + key.to_s.upcase]
