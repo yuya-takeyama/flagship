@@ -4,11 +4,11 @@ RSpec.describe Flagship::Flagset do
   describe '#enabled?' do
     let(:flagset) do
       described_class.new(:foo, {
-        true_flag: true,
-        false_flag: false,
-        lambda_true_flag: ->(context) { true },
-        lambda_false_flag: ->(context) { false },
-      }, context)
+        true_flag: ::Flagship::Feature.new(:true_flag, true, context),
+        false_flag: ::Flagship::Feature.new(:false_flag, false, context),
+        lambda_true_flag: ::Flagship::Feature.new(:lambda_true_flag, ->(context) { true }, context),
+        lambda_false_flag: ::Flagship::Feature.new(:lambda_false_flag, ->(context) { false }, context),
+      })
     end
 
     context 'when flag is not defined' do
@@ -36,38 +36,20 @@ RSpec.describe Flagship::Flagset do
         it { expect(flagset.enabled?(:lambda_false_flag)).to be false }
       end
     end
-
-    describe 'override by env' do
-      before do
-        stub_env(
-          FLAGSHIP_TRUE_FLAG: '0',
-          FLAGSHIP_FALSE_FLAG: '1',
-          FLAGSHIP_LAMBDA_TRUE_FLAG: 'false',
-          FLAGSHIP_LAMBDA_FALSE_FLAG: 'true',
-        )
-      end
-
-      it 'changes flags' do
-        expect(flagset.enabled?(:true_flag)).to be false
-        expect(flagset.enabled?(:false_flag)).to be true
-        expect(flagset.enabled?(:lambda_true_flag)).to be false
-        expect(flagset.enabled?(:lambda_false_flag)).to be true
-      end
-    end
   end
 
   describe 'extending' do
     let(:base) do
       described_class.new(:base, {
-        true_flag: true,
-        false_flag: false,
-        lambda_true_flag: ->(context) { true },
-        lambda_false_flag: ->(context) { false },
-      }, context)
+        true_flag: ::Flagship::Feature.new(:true_flag, true, context),
+        false_flag: ::Flagship::Feature.new(:false_flag, false, context),
+        lambda_true_flag: ::Flagship::Feature.new(:lambda_true_flag, ->(context) { true }, context),
+        lambda_false_flag: ::Flagship::Feature.new(:lambda_false_flag, ->(context) { false }, context),
+      })
     end
 
     it 'extends base flagset' do
-      flagset = described_class.new(:extending, {}, context, base)
+      flagset = described_class.new(:extending, {}, base)
 
       expect(flagset.enabled?(:true_flag)).to be true
       expect(flagset.enabled?(:false_flag)).to be false
@@ -78,11 +60,11 @@ RSpec.describe Flagship::Flagset do
     context 'with overriding flags' do
       it 'changes flags' do
         flagset = described_class.new(:extending, {
-          true_flag: false,
-          false_flag: true,
-          lambda_true_flag: ->(context) { false },
-          lambda_false_flag: ->(context) { true },
-        }, context, base)
+          true_flag: ::Flagship::Feature.new(:true_flag, false, context),
+          false_flag: ::Flagship::Feature.new(:false_flag, true, context),
+          lambda_true_flag: ::Flagship::Feature.new(:lambda_true_flag, ->(context) { false }, context),
+          lambda_false_flag: ::Flagship::Feature.new(:lambda_false_flag, ->(context) { true }, context),
+        }, base)
 
         expect(flagset.enabled?(:true_flag)).to be false
         expect(flagset.enabled?(:false_flag)).to be true
@@ -94,11 +76,11 @@ RSpec.describe Flagship::Flagset do
     context 'with new flags' do
       it 'adds flags' do
         flagset = described_class.new(:extending, {
-          new_true_flag: true,
-          new_false_flag: false,
-          new_lambda_true_flag: ->(context) { true },
-          new_lambda_false_flag: ->(context) { false },
-        }, context, base)
+          new_true_flag: ::Flagship::Feature.new(:new_true_flag, true, context),
+          new_false_flag: ::Flagship::Feature.new(:new_false_flag, false, context),
+          new_lambda_true_flag: ::Flagship::Feature.new(:new_lambda_true_flag, ->(context) { true }, context),
+          new_lambda_false_flag: ::Flagship::Feature.new(:new_lambda_false_flag, ->(context) { false }, context),
+        }, base)
 
         expect(flagset.enabled?(:new_true_flag)).to be true
         expect(flagset.enabled?(:new_false_flag)).to be false
@@ -106,9 +88,5 @@ RSpec.describe Flagship::Flagset do
         expect(flagset.enabled?(:new_lambda_false_flag)).to be false
       end
     end
-  end
-
-  def stub_env(hash = {})
-    stub_const 'ENV', ENV.to_hash.merge(hash.map{|k, v| [k.to_s, v] }.to_h)
   end
 end

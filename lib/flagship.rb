@@ -1,6 +1,7 @@
 require "flagship/version"
 require "flagship/context"
 require "flagship/dsl"
+require "flagship/feature"
 require "flagship/flagset"
 require "flagship/flagsets_container"
 
@@ -23,6 +24,10 @@ module Flagship
 
   def self.set_flagset(key)
     @@current_flagset = self.default_flagsets_container.get(key)
+  end
+
+  def self.features
+    self.current_flagset.features
   end
 
   def self.get_flagset(key)

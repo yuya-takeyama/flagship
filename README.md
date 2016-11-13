@@ -86,6 +86,32 @@ You can override flags with ENV named `FLAGSHIP_***`.
 
 Assuming that there is a flag `:foo`, you can override it with ENV `FLAGSHIP_FOO=1`.
 
+### Fetch all features
+
+```rb
+Flagship.features
+# => Array of Flagship::Feature
+
+Flagship.features.map(&:key)
+# => Array key of enabled features
+```
+
+### Categorize features with tags
+
+```rb
+Flagship.define :blog do
+  enable :post
+  enable :comment, communication: true
+  enable :trackback, communication: true
+end
+
+Flagship.set_flagset(:blog)
+
+# Fetch keys of enabled communication features
+Flagship.features.select{ |feature| feature.tags[:communication] && feature.enabled? }.map(&:key)
+# => [:comment, :trackback]
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.

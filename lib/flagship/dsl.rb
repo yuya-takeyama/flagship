@@ -5,26 +5,29 @@ class Flagship::Dsl
     @key = key
     @context = context
     @base = base
-    @flags = {}
+    @features = {}
     @definition = block
   end
 
   def enable(key, opts = {})
-    if opts[:if]
-      @flags[key] = opts[:if]
+    opts = opts.dup
+    condition = opts.delete(:if)
+
+    if condition
+      @features[key] = ::Flagship::Feature.new(key, condition, @context, opts)
     else
-      @flags[key] = true
+      @features[key] = ::Flagship::Feature.new(key, true, @context, opts)
     end
   end
 
   def disable(key, opts = {})
     raise InvalidOptionError.new("Option :if is not available for #disable") if opts[:if]
 
-    @flags[key] = false
+    @features[key] = ::Flagship::Feature.new(key, false, @context, opts)
   end
 
   def flagset
     instance_eval(&@definition)
-    ::Flagship::Flagset.new(@key, @flags, @context, @base)
+    ::Flagship::Flagset.new(@key, @features, @base)
   end
 end

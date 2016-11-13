@@ -1,34 +1,23 @@
 class Flagship::Flagset
-  attr_reader :key, :flags
+  attr_reader :key
 
   class UndefinedFlagError < ::StandardError; end
 
-  def initialize(key, flags, context, base = nil)
+  def initialize(key, features_hash, base = nil)
     @key = key
-    @flags = base ? base.flags.merge(flags) : flags
-    @context = context
+    @features = base ?
+      base.features.map{ |f| [f.key, f] }.to_h.merge(features_hash) :
+      features_hash
   end
 
-  def enabled?(key, if: nil)
-    raise UndefinedFlagError.new("The flag :#{key} is not defined") unless @flags.key? key
+  def enabled?(key)
+    raise UndefinedFlagError.new("The flag :#{key} is not defined") unless @features.key? key
 
-    env = ENV['FLAGSHIP_' + key.to_s.upcase]
 
-    if env
-      case env.downcase
-      when '1', 'true'
-        return true
-      when '0', 'false', ''
-        return false
-      end
-    end
+    @features[key].enabled?
+  end
 
-    flag = @flags[key]
-
-    if flag.respond_to?(:call)
-      !!@flags[key].call(@context)
-    else
-      !!@flags[key]
-    end
+  def features
+    @features.map { |key, feature| feature }
   end
 end
