@@ -22,8 +22,13 @@ module Flagship
     self.default_context.__set(key, value)
   end
 
-  def self.set_flagset(key)
+  def self.select_flagset(key)
     @@current_flagset = self.default_flagsets_container.get(key)
+  end
+
+  # Deprecated: Use select_flagset
+  def self.set_flagset(key)
+    self.select_flagset(key)
   end
 
   def self.features

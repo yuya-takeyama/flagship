@@ -29,7 +29,7 @@ Flagship.define :app do
   disable :deprecate_feature
 end
 
-Flagship.set_flagset(:app)
+Flagship.select_flagset(:app)
 ```
 
 ### Branch with a flag
@@ -74,9 +74,9 @@ Flagship.define :production, extend: :common do
 end
 
 if Rails.env.production?
-  Flagship.set_flagset(:production)
+  Flagship.select_flagset(:production)
 else
-  Flagship.set_flagset(:development)
+  Flagship.select_flagset(:development)
 end
 ```
 
@@ -105,7 +105,7 @@ Flagship.define :blog do
   enable :trackback, communication: true
 end
 
-Flagship.set_flagset(:blog)
+Flagship.select_flagset(:blog)
 
 # Fetch keys of enabled communication features
 Flagship.features.select{ |feature| feature.tags[:communication] && feature.enabled? }.map(&:key)

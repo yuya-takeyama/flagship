@@ -50,7 +50,7 @@ RSpec.describe Flagship do
           enable :lambda_false_flag, if: ->(context) { false }
         end
 
-        Flagship.set_flagset(:foo)
+        Flagship.select_flagset(:foo)
       end
 
       context 'and the feature is enabled' do
@@ -90,7 +90,7 @@ RSpec.describe Flagship do
         enable :baz, if: ->(context) { context.var != 'VAR' }
       end
 
-      Flagship.set_flagset(:foo)
+      Flagship.select_flagset(:foo)
 
       expect(Flagship.enabled?(:bar)).to be true
       expect(Flagship.enabled?(:baz)).to be false
@@ -104,7 +104,7 @@ RSpec.describe Flagship do
         enable :baz, if: ->(context) { context.var != 'VAR' }
       end
 
-      Flagship.set_flagset(:foo)
+      Flagship.select_flagset(:foo)
 
       expect(Flagship.enabled?(:bar)).to be true
       expect(Flagship.enabled?(:baz)).to be false
@@ -120,7 +120,7 @@ RSpec.describe Flagship do
         enable :conditionally_disabled_feature, if: ->(context) { false }
       end
 
-      Flagship.set_flagset(:foo)
+      Flagship.select_flagset(:foo)
 
       features = Flagship.features
 
