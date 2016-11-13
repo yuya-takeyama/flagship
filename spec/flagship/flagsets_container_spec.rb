@@ -1,11 +1,10 @@
 RSpec.describe Flagship::FlagsetsContainer do
   let(:container) { described_class.new }
-  let(:context) { ::Flagship::Context.new }
 
   describe '#set' do
     context 'when key is duplicated' do
       it 'raises DuplicatedFlagsetError' do
-        flagset = ::Flagship::Flagset.new(:foo, {}, context)
+        flagset = ::Flagship::Flagset.new(:foo, {})
 
         container.add(flagset)
 
@@ -19,7 +18,7 @@ RSpec.describe Flagship::FlagsetsContainer do
   describe '#get' do
     context 'when the key exists' do
       it 'returns the flagset' do
-        flagset = ::Flagship::Flagset.new(:foo, {}, context)
+        flagset = ::Flagship::Flagset.new(:foo, {})
 
         container.add(flagset)
 
