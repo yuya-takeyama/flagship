@@ -110,4 +110,31 @@ RSpec.describe Flagship do
       expect(Flagship.enabled?(:baz)).to be false
     end
   end
+
+  describe '.features' do
+    it 'returns Feature objects' do
+      Flagship.define :foo do
+        enable :enabled_feature
+        disable :disabled_feature
+        enable :conditionally_enabled_feature, if: ->(context) { true }
+        enable :conditionally_disabled_feature, if: ->(context) { false }
+      end
+
+      Flagship.set_flagset(:foo)
+
+      features = Flagship.features
+
+      expect(features[0].key).to eq :enabled_feature
+      expect(features[0].enabled?).to be true
+
+      expect(features[1].key).to eq :disabled_feature
+      expect(features[1].enabled?).to be false
+
+      expect(features[2].key).to eq :conditionally_enabled_feature
+      expect(features[2].enabled?).to be true
+
+      expect(features[3].key).to eq :conditionally_disabled_feature
+      expect(features[3].enabled?).to be false
+    end
+  end
 end

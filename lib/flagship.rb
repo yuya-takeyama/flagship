@@ -26,6 +26,10 @@ module Flagship
     @@current_flagset = self.default_flagsets_container.get(key)
   end
 
+  def self.features
+    self.current_flagset.features
+  end
+
   def self.get_flagset(key)
     self.default_flagsets_container.get(key)
   end
