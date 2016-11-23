@@ -10,13 +10,13 @@ class Flagship::Dsl
   end
 
   def enable(key, opts = {})
-    opts = opts.dup
-    condition = opts.delete(:if)
+    tags = opts.dup
+    condition = tags.delete(:if)
 
     if condition
-      @features[key] = ::Flagship::Feature.new(key, condition, @context, opts)
+      @features[key] = ::Flagship::Feature.new(key, condition, @context, tags)
     else
-      @features[key] = ::Flagship::Feature.new(key, true, @context, opts)
+      @features[key] = ::Flagship::Feature.new(key, true, @context, tags)
     end
   end
 
