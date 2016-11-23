@@ -26,12 +26,6 @@ module Flagship
     @@current_flagset = self.default_flagsets_container.get(key)
   end
 
-  # Deprecated: Use select_flagset
-  def self.set_flagset(key)
-    warn "[DEPRECATION] `set_flagset` is deprecated.  Please use `select_flagset` instead."
-    self.select_flagset(key)
-  end
-
   def self.features
     self.current_flagset.features
   end
