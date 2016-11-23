@@ -6,12 +6,13 @@ RSpec.describe Flagship do
   describe '.define' do
     it 'defines a flagset' do
       Flagship.define(:foo) do
-        enable :bar
+        enable :bar, tag_a: true
       end
 
       flagset = Flagship.default_flagsets_container.get(:foo)
 
       expect(flagset.enabled?(:bar)).to be true
+      expect(flagset.features.first.tags).to eq(tag_a: true)
     end
 
     context 'with :extend option' do
