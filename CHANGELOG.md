@@ -1,5 +1,19 @@
 # Change Log
 
+## [0.3.0] - 2016-11-24
+
+### Added
+
+- `with_tags` method to DSL
+
+### Fixed
+
+- Tags are extended from base flagset
+
+### Removed
+
+- `Flagship.set_flagset` method. Use `Flagship.set_flagset` instead
+
 ## [0.2.0] - 2016-11-14
 
 ### Added
