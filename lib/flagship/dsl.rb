@@ -23,7 +23,8 @@ class Flagship::Dsl
   def disable(key, opts = {})
     raise InvalidOptionError.new("Option :if is not available for #disable") if opts[:if]
 
-    @features[key] = ::Flagship::Feature.new(key, false, @context, opts)
+    tags = opts.dup
+    @features[key] = ::Flagship::Feature.new(key, false, @context, tags)
   end
 
   def flagset
