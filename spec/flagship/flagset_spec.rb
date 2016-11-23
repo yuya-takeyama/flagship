@@ -41,8 +41,8 @@ RSpec.describe Flagship::Flagset do
   describe 'extending' do
     let(:base) do
       described_class.new(:base, {
-        true_flag: ::Flagship::Feature.new(:true_flag, true, context),
-        false_flag: ::Flagship::Feature.new(:false_flag, false, context),
+        true_flag: ::Flagship::Feature.new(:true_flag, true, context, {foo: :FOO}),
+        false_flag: ::Flagship::Feature.new(:false_flag, false, context, {bar: :BAR}),
         lambda_true_flag: ::Flagship::Feature.new(:lambda_true_flag, ->(context) { true }, context),
         lambda_false_flag: ::Flagship::Feature.new(:lambda_false_flag, ->(context) { false }, context),
       })
@@ -55,6 +55,18 @@ RSpec.describe Flagship::Flagset do
       expect(flagset.enabled?(:false_flag)).to be false
       expect(flagset.enabled?(:lambda_true_flag)).to be true
       expect(flagset.enabled?(:lambda_false_flag)).to be false
+    end
+
+    it 'extends tags of base flagset' do
+      flagset = described_class.new(:extending, {
+        false_flag: ::Flagship::Feature.new(:false_flag, false, context, {bar: :BARBAR, baz: :BAZ}),
+        lambda_false_flag: ::Flagship::Feature.new(:lambda_false_flag, ->(context) { false }, context, {foobar: :FOOBAR}),
+      }, base)
+
+      expect(flagset.features[0].tags).to eq(foo: :FOO)
+      expect(flagset.features[1].tags).to eq(bar: :BARBAR, baz: :BAZ)
+      expect(flagset.features[2].tags).to eq({})
+      expect(flagset.features[3].tags).to eq({foobar: :FOOBAR})
     end
 
     context 'with overriding flags' do

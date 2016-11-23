@@ -26,4 +26,8 @@ class Flagship::Feature
       !!@enabled
     end
   end
+
+  def extend_feature(feature)
+    self.class.new(@key, @enabled, @context, feature.tags.merge(@tags))
+  end
 end
