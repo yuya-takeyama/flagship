@@ -7,23 +7,33 @@ class Flagship::Dsl
     @base = base
     @features = {}
     @definition = block
+    @base_tags = {}
   end
 
   def enable(key, opts = {})
-    opts = opts.dup
-    condition = opts.delete(:if)
+    tags = opts.dup
+    condition = tags.delete(:if)
 
     if condition
-      @features[key] = ::Flagship::Feature.new(key, condition, @context, opts)
+      @features[key] = ::Flagship::Feature.new(key, condition, @context, @base_tags.merge(tags))
     else
-      @features[key] = ::Flagship::Feature.new(key, true, @context, opts)
+      @features[key] = ::Flagship::Feature.new(key, true, @context, @base_tags.merge(tags))
     end
   end
 
   def disable(key, opts = {})
     raise InvalidOptionError.new("Option :if is not available for #disable") if opts[:if]
 
-    @features[key] = ::Flagship::Feature.new(key, false, @context, opts)
+    tags = opts.dup
+    @features[key] = ::Flagship::Feature.new(key, false, @context, @base_tags.merge(tags))
+  end
+
+  def with_tags(tags, &block)
+    orig_base_tags = @base_tags
+    @base_tags = @base_tags.merge(tags)
+    instance_eval(&block)
+  ensure
+    @base_tags = orig_base_tags
   end
 
   def flagset

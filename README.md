@@ -112,6 +112,21 @@ Flagship.features.select{ |feature| feature.tags[:communication] && feature.enab
 # => [:comment, :trackback]
 ```
 
+### `with_tags`
+
+Using `with_tags`, you can set same tags to multiple features at once.
+
+```rb
+Flagship.define :blog do
+  enable :post
+
+  with_tags(communication: true) do
+    enable :comment
+    enable :trackback
+  end
+end
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
