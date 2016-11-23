@@ -8,7 +8,7 @@
 
 ### Fixed
 
-- Tags are extended from base flagset
+- Tags are extended from the feature with same key in base flagset
 
 ### Removed
 
