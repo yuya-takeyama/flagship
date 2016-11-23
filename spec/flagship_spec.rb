@@ -31,6 +31,31 @@ RSpec.describe Flagship do
         expect(flagset.enabled?(:bar)).to be true
       end
     end
+
+    context 'using with_tags DSL' do
+      it 'sets tags' do
+        Flagship.define :foo do
+          with_tags(tag_a: true) do
+            enable :bar, tag_b: true
+            disable :baz, tag_a: false
+
+            with_tags(tag_c: false) do
+              enable :foobar, tag_d: true
+              enable :qux, tag_c: true
+            end
+          end
+        end
+
+        flagset = Flagship.default_flagsets_container.get(:foo)
+
+        expect(flagset.enabled?(:bar)).to be true
+        expect(flagset.enabled?(:baz)).to be false
+        expect(flagset.features[0].tags).to eq(tag_a: true, tag_b: true)
+        expect(flagset.features[1].tags).to eq(tag_a: false)
+        expect(flagset.features[2].tags).to eq(tag_a: true, tag_c: false, tag_d: true)
+        expect(flagset.features[3].tags).to eq(tag_a: true, tag_c: true)
+      end
+    end
   end
 
   describe '.enabled?' do
