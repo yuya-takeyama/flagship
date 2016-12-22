@@ -127,6 +127,17 @@ Flagship.define :blog do
 end
 ```
 
+## Feature flag composition
+
+You can call `#enabled?` method inside of DSL.
+
+```rb
+Flagship.define :blog do
+  enable :comment, if: ->(context) { context.current_user.activated? }
+  enable :comment_deletion, if: ->(context) { enabled?(:comment) && context.current_user.moderator? }
+end
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
