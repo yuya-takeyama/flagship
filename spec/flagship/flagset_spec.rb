@@ -38,6 +38,24 @@ RSpec.describe Flagship::Flagset do
     end
   end
 
+  describe 'disabled?' do
+    let(:flagset) do
+      described_class.new(:foo, {
+        true_flag: ::Flagship::Feature.new(:true_flag, true, context),
+        false_flag: ::Flagship::Feature.new(:false_flag, false, context),
+        lambda_true_flag: ::Flagship::Feature.new(:lambda_true_flag, ->(context) { true }, context),
+        lambda_false_flag: ::Flagship::Feature.new(:lambda_false_flag, ->(context) { false }, context),
+      })
+    end
+
+    it 'returns inverse of enabled?' do
+      expect(flagset.disabled?(:true_flag)).to be false
+      expect(flagset.disabled?(:false_flag)).to be true
+      expect(flagset.disabled?(:lambda_true_flag)).to be false
+      expect(flagset.disabled?(:lambda_false_flag)).to be true
+    end
+  end
+
   describe 'extending' do
     let(:base) do
       described_class.new(:base, {
