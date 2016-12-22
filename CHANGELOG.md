@@ -4,9 +4,9 @@
 
 ### Added
 
-- Added methods to filter `Flagship.features` #16
-- `enabled?` method in DSL #17
-- `Flagship.disabled?` method #18
+- Added methods to filter `Flagship.features` [#16](https://github.com/yuya-takeyama/flagship/pull/16) [#19](https://github.com/yuya-takeyama/flagship/pull/19)
+- `enabled?` method in DSL [#17](https://github.com/yuya-takeyama/flagship/pull/17)
+- `Flagship.disabled?` method [#18](https://github.com/yuya-takeyama/flagship/pull/18)
 
 ## [0.3.0] - 2016-11-24
 
