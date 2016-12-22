@@ -2,6 +2,7 @@ require "flagship/version"
 require "flagship/context"
 require "flagship/dsl"
 require "flagship/feature"
+require "flagship/features"
 require "flagship/flagset"
 require "flagship/flagsets_container"
 

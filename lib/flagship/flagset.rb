@@ -18,7 +18,7 @@ class Flagship::Flagset
   end
 
   def features
-    @features.map { |key, feature| feature }
+    Flagship::Features.new @features.map { |key, feature| feature }
   end
 
   private
