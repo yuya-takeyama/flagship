@@ -185,15 +185,26 @@ RSpec.describe Flagship do
       end
 
       context 'tags' do
+        it do
+          expect(flagset.features.tagged_any(tag_a: true).map(&:key)).to eq([:bar])
+          expect(flagset.features.tagged_any(tag_b: false).map(&:key)).to eq([:baz])
+        end
+
         it 'any' do
-          expect(flagset.features.tagged(tag_a: true).map(&:key)).to eq([:bar])
-          expect(flagset.features.tagged(tag_b: false).map(&:key)).to eq([:baz])
-          expect(flagset.features.tagged(tag_a: true, tag_b: true).map(&:key)).to eq([:bar, :qux])
+          expect(flagset.features.tagged_any(tag_a: true, tag_b: true).map(&:key)).to eq([:bar, :qux])
         end
 
         it 'all' do
+          expect(flagset.features.tagged(tag_a: true, tag_b: true).map(&:key)).to eq([])
+          expect(flagset.features.tagged(tag_b: true, tag_c: true).map(&:key)).to eq([:qux])
+
+          # alias (more explicit)
           expect(flagset.features.tagged_all(tag_a: true, tag_b: true).map(&:key)).to eq([])
           expect(flagset.features.tagged_all(tag_b: true, tag_c: true).map(&:key)).to eq([:qux])
+
+          # chained syntax
+          expect(flagset.features.tagged(tag_a: true).tagged(tag_b: true).map(&:key)).to eq([])
+          expect(flagset.features.tagged(tag_b: true).tagged(tag_c: true).map(&:key)).to eq([:qux])
         end
       end
 
