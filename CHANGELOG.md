@@ -1,5 +1,13 @@
 # Change Log
 
+## [0.4.0] - 2016-12-23
+
+### Added
+
+- Added methods to filter `Flagship.features` #16
+- `enabled?` method in DSL #17
+- `Flagship.disabled?` method #18
+
 ## [0.3.0] - 2016-11-24
 
 ### Added
