@@ -162,5 +162,59 @@ RSpec.describe Flagship do
       expect(features[3].key).to eq :conditionally_disabled_feature
       expect(features[3].enabled?).to be false
     end
+
+    context 'can filter by' do
+      let(:flagset) { Flagship.default_flagsets_container.get(:foo) }
+
+      before do
+        Flagship.define :foo do
+          enable :enabled_feature
+          disable :disabled_feature
+          enable :conditionally_enabled_feature, if: ->(context) { true }
+          enable :conditionally_disabled_feature, if: ->(context) { false }
+
+          with_tags(tag_a: true) do
+            enable :bar
+          end
+
+          with_tags(tag_b: false) do
+            enable :baz
+            enable :qux, tag_b: true, tag_c: true
+          end
+        end
+      end
+
+      context 'tags' do
+        it do
+          expect(flagset.features.tagged_any(tag_a: true).map(&:key)).to eq([:bar])
+          expect(flagset.features.tagged_any(tag_b: false).map(&:key)).to eq([:baz])
+        end
+
+        it 'any' do
+          expect(flagset.features.tagged_any(tag_a: true, tag_b: true).map(&:key)).to eq([:bar, :qux])
+        end
+
+        it 'all' do
+          expect(flagset.features.tagged(tag_a: true, tag_b: true).map(&:key)).to eq([])
+          expect(flagset.features.tagged(tag_b: true, tag_c: true).map(&:key)).to eq([:qux])
+
+          # alias (more explicit)
+          expect(flagset.features.tagged_all(tag_a: true, tag_b: true).map(&:key)).to eq([])
+          expect(flagset.features.tagged_all(tag_b: true, tag_c: true).map(&:key)).to eq([:qux])
+
+          # chained syntax
+          expect(flagset.features.tagged(tag_a: true).tagged(tag_b: true).map(&:key)).to eq([])
+          expect(flagset.features.tagged(tag_b: true).tagged(tag_c: true).map(&:key)).to eq([:qux])
+        end
+      end
+
+      it 'enabled' do
+        expect(flagset.features.enabled.map(&:key)).to eq([:enabled_feature, :conditionally_enabled_feature, :bar, :baz, :qux])
+      end
+
+      it 'disabled' do
+        expect(flagset.features.disabled.map(&:key)).to eq([:disabled_feature, :conditionally_disabled_feature])
+      end
+    end
   end
 end
