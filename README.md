@@ -97,7 +97,10 @@ Flagship.features
 # => Array of Flagship::Feature
 
 Flagship.features.map(&:key)
-# => Array key of enabled features
+# => Array key of all features
+
+Flagship.features.enabled.map(&:key)
+# => Array key of all enabled features
 ```
 
 ### Categorize features with tags
@@ -106,14 +109,16 @@ Flagship.features.map(&:key)
 Flagship.define :blog do
   enable :post
   enable :comment, communication: true
-  enable :trackback, communication: true
+  enable :trackback, communication: true, tracking: true
 end
 
 Flagship.select_flagset(:blog)
 
-# Fetch keys of enabled communication features
-Flagship.features.select{ |feature| feature.tags[:communication] && feature.enabled? }.map(&:key)
+Flagship.features.enabled.tagged(communication: true).map(&:key)
 # => [:comment, :trackback]
+
+Flagship.features.enabled.tagged(communication: true, tracking: true).map(&:key)
+# => [:trackback]
 ```
 
 ### `with_tags`
