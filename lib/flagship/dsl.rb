@@ -1,6 +1,8 @@
 class Flagship::Dsl
   class InvalidOptionError < ::StandardError; end
 
+  attr_reader :flagset
+
   def initialize(key, context, base = nil, &block)
     @key = key
     @context = context
@@ -8,6 +10,10 @@ class Flagship::Dsl
     @features = {}
     @definition = block
     @base_tags = {}
+
+    instance_eval(&@definition)
+
+    @flagset = ::Flagship::Flagset.new(@key, @features, @base)
   end
 
   def enable(key, opts = {})
@@ -36,8 +42,7 @@ class Flagship::Dsl
     @base_tags = orig_base_tags
   end
 
-  def flagset
-    instance_eval(&@definition)
-    ::Flagship::Flagset.new(@key, @features, @base)
+  def enabled?(key)
+    @flagset.enabled?(key)
   end
 end

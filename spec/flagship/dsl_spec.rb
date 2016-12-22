@@ -41,6 +41,17 @@ RSpec.describe Flagship::Dsl do
         end
       end
     end
+
+    describe 'feature flag composition' do
+      it 'can call #enabled? method in lambda' do
+        dsl = ::Flagship::Dsl.new(:foo, context) do
+          enable :bar
+          enable :baz, if: ->(context) { enabled?(:bar) && true }
+        end
+
+        expect(dsl.flagset.enabled?(:baz)).to be true
+      end
+    end
   end
 
   describe '#disable' do
