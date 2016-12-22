@@ -38,6 +38,10 @@ Flagship.select_flagset(:app)
 if Flagship.enabled?(:some_feature)
   # Implement the feature here
 end
+
+if Flagship.disabled?(:some_feature)
+  # Run when :some_feature is not enabled
+end
 ```
 
 ### Set context variables

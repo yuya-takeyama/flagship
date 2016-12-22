@@ -17,6 +17,10 @@ class Flagship::Flagset
     @features[key].enabled?
   end
 
+  def disabled?(key)
+    !enabled?(key)
+  end
+
   def features
     Flagship::Features.new @features.map { |key, feature| feature }
   end

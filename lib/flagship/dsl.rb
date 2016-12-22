@@ -45,4 +45,8 @@ class Flagship::Dsl
   def enabled?(key)
     @flagset.enabled?(key)
   end
+
+  def disabled?(key)
+    @flagset.disabled?(key)
+  end
 end
