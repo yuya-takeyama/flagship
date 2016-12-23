@@ -19,6 +19,7 @@ class Flagship::Dsl
   def enable(key, opts = {})
     tags = opts.dup
     condition = tags.delete(:if)
+    condition = method(condition) if condition.is_a?(Symbol) # convert to proc
 
     if condition
       @features[key] = ::Flagship::Feature.new(key, condition, @context, @base_tags.merge(tags))
@@ -48,5 +49,9 @@ class Flagship::Dsl
 
   def disabled?(key)
     @flagset.disabled?(key)
+  end
+
+  def include(mod)
+    extend mod
   end
 end
