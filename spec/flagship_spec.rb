@@ -216,5 +216,79 @@ RSpec.describe Flagship do
         expect(flagset.features.disabled.map(&:key)).to eq([:disabled_feature, :conditionally_disabled_feature])
       end
     end
+
+    context 'helper' do
+      let(:flagset) { Flagship.default_flagsets_container.get(:foo) }
+
+      it 'provides a method you can use within procs' do
+        Flagship.define :foo do
+          helper :is_eq do |x, y|
+            x == y
+          end
+
+          enable :bar, if: -> context { is_eq(2, 2) }
+          enable :baz, if: -> context { is_eq(2, 6) }
+        end
+
+        expect(flagset.enabled?(:bar)).to be true
+        expect(flagset.enabled?(:baz)).to be false
+      end
+
+      it 'provides a method you can use for ifs' do
+        Flagship.define :foo do
+          helper(:is_true)  { |context| true }
+          helper(:is_false) { |context| false }
+
+          enable :qux, if: :is_true
+          enable :quz, if: :is_false
+        end
+
+        expect(flagset.enabled?(:qux)).to be true
+        expect(flagset.enabled?(:quz)).to be false
+      end
+
+      it 'is not shared with other flagship declarations' do
+        Flagship.define :foo do
+          helper(:is_true) { |context| true }
+          enable :baz, if: :is_true
+        end
+
+        expect{
+          Flagship.define :bar do
+            enable :baz, if: :is_true
+          end
+        }.to raise_error(NameError)
+      end
+
+      it 'can be defined and included in modules' do
+        module FooMethods
+          def is_foo(context)
+            true
+          end
+        end
+
+        module OtherMethods
+          def is_foo(context)
+            false
+          end
+        end
+
+        Flagship.define :foo do
+          include FooMethods
+          enable :feature, if: :is_foo
+        end
+
+        Flagship.define :bar do
+          include OtherMethods
+          enable :feature, if: :is_foo
+        end
+
+        Flagship.select_flagset(:foo)
+        expect(Flagship.enabled?(:feature)).to be true
+
+        Flagship.select_flagset(:bar)
+        expect(Flagship.enabled?(:feature)).to be false
+      end
+    end
   end
 end

@@ -147,6 +147,46 @@ Flagship.define :blog do
 end
 ```
 
+## Helper methods
+
+You can define helpers with the `helper` keyword. Helpers can be used within blocks, procs, or as symbolic names for if statements to tidy up your code.
+
+```rb
+Flagship.define :blog do
+  helper :is_author do |comment, user|
+    comment.author == user
+  end
+
+  def can_view_comment(context)
+    context.current_user.moderator?
+  end
+
+  enable :comment, if: :can_view_comment
+  enable :comment_deletion, if: ->(context) { is_author(context.comment, context.current_user) }
+end
+```
+
+To share helpers, you can simply include them as modules.
+
+
+```rb
+module FlagHelpers
+  def is_author(context)
+    context.comment.author == context.current_user
+  end
+end
+
+Flagship.define :development do
+  include FlagHelpers
+  enable :delete, if: :is_author
+end
+
+Flagship.define :production do
+  include FlagHelpers
+  enable :delete, if: :is_author
+end
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
