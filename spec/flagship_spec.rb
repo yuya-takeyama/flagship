@@ -217,12 +217,12 @@ RSpec.describe Flagship do
       end
     end
 
-    context 'helper' do
+    context 'helper methods' do
       let(:flagset) { Flagship.default_flagsets_container.get(:foo) }
 
-      it 'provides a method you can use within procs' do
+      it 'can be used within procs' do
         Flagship.define :foo do
-          helper :is_eq do |x, y|
+          def is_eq(x, y)
             x == y
           end
 
@@ -234,10 +234,15 @@ RSpec.describe Flagship do
         expect(flagset.enabled?(:baz)).to be false
       end
 
-      it 'provides a method you can use for ifs' do
+      it 'can be symbolically referenced' do
         Flagship.define :foo do
-          helper(:is_true)  { |context| true }
-          helper(:is_false) { |context| false }
+          def is_true(context)
+            true
+          end
+
+          def is_false(context)
+            false
+          end
 
           enable :qux, if: :is_true
           enable :quz, if: :is_false
@@ -247,9 +252,12 @@ RSpec.describe Flagship do
         expect(flagset.enabled?(:quz)).to be false
       end
 
-      it 'is not shared with other flagship declarations' do
+      it 'are not shared with other flagship declarations' do
         Flagship.define :foo do
-          helper(:is_true) { |context| true }
+          def is_true(context)
+            true
+          end
+
           enable :baz, if: :is_true
         end
 
@@ -260,7 +268,7 @@ RSpec.describe Flagship do
         }.to raise_error(NameError)
       end
 
-      it 'can be defined and included in modules' do
+      it 'can be defined and included from modules' do
         module FooMethods
           def is_foo(context)
             true

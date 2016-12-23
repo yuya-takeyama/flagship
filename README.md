@@ -149,11 +149,11 @@ end
 
 ## Helper methods
 
-You can define helpers with the `helper` keyword. Helpers can be used within blocks, procs, or as symbolic names for if statements to tidy up your code.
+You can define helpers as normal methods with `def`. Methods can be used within blocks, procs, or as symbolic names for if statements to tidy up your code.
 
 ```rb
 Flagship.define :blog do
-  helper :is_author do |comment, user|
+  def is_author(comment, user)
     comment.author == user
   end
 

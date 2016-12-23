@@ -51,10 +51,6 @@ class Flagship::Dsl
     @flagset.disabled?(key)
   end
 
-  def helper(name, &block)
-    define_singleton_method name, &block
-  end
-
   def include(mod)
     extend mod
   end
