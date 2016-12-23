@@ -9,46 +9,48 @@ require "flagship/flagsets_container"
 module Flagship
   class NoFlagsetSelectedError < ::StandardError; end
 
-  def self.define(key, options = {}, &block)
-    context = self.default_context
-    base = options[:extend] ? self.get_flagset(options[:extend]) : nil
-    self.default_flagsets_container.add ::Flagship::Dsl.new(key, context, base, &block).flagset
-  end
+  class << self
+    def define(key, options = {}, &block)
+      context = self.default_context
+      base = options[:extend] ? self.get_flagset(options[:extend]) : nil
+      default_flagsets_container.add ::Flagship::Dsl.new(key, context, base, &block).flagset
+    end
 
-  def self.enabled?(key)
-    self.current_flagset.enabled?(key)
-  end
+    def enabled?(key)
+      current_flagset.enabled?(key)
+    end
 
-  def self.set_context(key, value)
-    self.default_context.__set(key, value)
-  end
+    def set_context(key, value)
+      default_context.__set(key, value)
+    end
 
-  def self.select_flagset(key)
-    @@current_flagset = self.default_flagsets_container.get(key)
-  end
+    def select_flagset(key)
+      @@current_flagset = default_flagsets_container.get(key)
+    end
 
-  def self.features
-    self.current_flagset.features
-  end
+    def features
+      current_flagset.features
+    end
 
-  def self.get_flagset(key)
-    self.default_flagsets_container.get(key)
-  end
+    def get_flagset(key)
+      default_flagsets_container.get(key)
+    end
 
-  def self.default_flagsets_container
-    @@default_flagsts_container ||= ::Flagship::FlagsetsContainer.new
-  end
+    def default_flagsets_container
+      @@default_flagsts_container ||= ::Flagship::FlagsetsContainer.new
+    end
 
-  def self.current_flagset
-    @@current_flagset or raise NoFlagsetSelectedError.new('No flagset is selected')
-  end
+    def current_flagset
+      @@current_flagset or raise NoFlagsetSelectedError.new('No flagset is selected')
+    end
 
-  def self.default_context
-    @@default_context ||= ::Flagship::Context.new
-  end
+    def default_context
+      @@default_context ||= ::Flagship::Context.new
+    end
 
-  def self.clear_state
-    @@default_flagsts_container = nil
-    @@current_flagset = nil
+    def clear_state
+      @@default_flagsts_container = nil
+      @@current_flagset = nil
+    end
   end
 end
