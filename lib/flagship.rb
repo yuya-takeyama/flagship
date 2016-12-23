@@ -25,7 +25,7 @@ module Flagship
     end
 
     def select_flagset(key)
-      @@current_flagset = default_flagsets_container.get(key)
+      @current_flagset = default_flagsets_container.get(key)
     end
 
     def features
@@ -37,20 +37,20 @@ module Flagship
     end
 
     def default_flagsets_container
-      @@default_flagsts_container ||= ::Flagship::FlagsetsContainer.new
+      @default_flagsts_container ||= ::Flagship::FlagsetsContainer.new
     end
 
     def current_flagset
-      @@current_flagset or raise NoFlagsetSelectedError.new('No flagset is selected')
+      @current_flagset or raise NoFlagsetSelectedError.new('No flagset is selected')
     end
 
     def default_context
-      @@default_context ||= ::Flagship::Context.new
+      @default_context ||= ::Flagship::Context.new
     end
 
     def clear_state
-      @@default_flagsts_container = nil
-      @@current_flagset = nil
+      @default_flagsts_container = nil
+      @current_flagset = nil
     end
   end
 end
