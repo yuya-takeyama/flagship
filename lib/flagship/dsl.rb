@@ -11,9 +11,16 @@ class Flagship::Dsl
     @definition = block
     @base_tags = {}
 
+    if @base
+      @base.helper_methods.each do |method|
+        define_singleton_method(method.name, &method)
+      end
+    end
+
     instance_eval(&@definition)
 
-    @flagset = ::Flagship::Flagset.new(@key, @features, @base)
+    helper_methods = singleton_methods.map { |sym| method(sym) }
+    @flagset = ::Flagship::Flagset.new(@key, @features, @base, helper_methods)
   end
 
   def enable(key, opts = {})
