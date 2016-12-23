@@ -190,10 +190,8 @@ And you can also extend helper methods from base flagset.
 
 ```rb
 Flagship.define :base do
-  def staff?(context)
-    def is_author(context)
-      context.comment.author == context.current_user
-    end
+  def is_author(context)
+    context.comment.author == context.current_user
   end
 end
 
