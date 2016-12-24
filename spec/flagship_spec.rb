@@ -283,6 +283,8 @@ RSpec.describe Flagship do
           Flagship.define :bar do
             enable :baz, if: :is_true
           end
+          Flagship.select_flagset(:bar)
+          Flagship.enabled?(:baz)
         }.to raise_error(NameError)
       end
 
