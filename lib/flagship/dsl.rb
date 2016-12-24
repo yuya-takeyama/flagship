@@ -19,7 +19,11 @@ class Flagship::Dsl
   def enable(key, opts = {})
     tags = opts.dup
     condition = tags.delete(:if)
-    condition = method(condition) if condition.is_a?(Symbol) # convert to proc
+    # convert to proc
+    if condition.is_a?(Symbol)
+      sym = condition
+      condition = ->(context) { method(sym).call(context) }
+    end
 
     if condition
       @features[key] = ::Flagship::Feature.new(key, condition, @context, @base_tags.merge(tags))
