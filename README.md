@@ -168,7 +168,6 @@ end
 
 To share helpers, you can simply include them as modules.
 
-
 ```rb
 module FlagHelpers
   def is_author(context)
@@ -183,6 +182,20 @@ end
 
 Flagship.define :production do
   include FlagHelpers
+  enable :delete, if: :is_author
+end
+```
+
+And you can also extend helper methods from base flagset.
+
+```rb
+Flagship.define :base do
+  def is_author(context)
+    context.comment.author == context.current_user
+  end
+end
+
+Flagship.define :production do
   enable :delete, if: :is_author
 end
 ```

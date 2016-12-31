@@ -1,13 +1,14 @@
 class Flagship::Flagset
-  attr_reader :key
+  attr_reader :key, :helper_methods
 
   class UndefinedFlagError < ::StandardError; end
 
-  def initialize(key, features_hash, base = nil)
+  def initialize(key, features_hash, base = nil, helper_methods = [])
     @key = key
     @features = base ?
       extend_features(features_hash, base) :
       features_hash
+    @helper_methods = helper_methods
   end
 
   def enabled?(key)

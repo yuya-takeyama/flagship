@@ -317,6 +317,40 @@ RSpec.describe Flagship do
         Flagship.select_flagset(:bar)
         expect(Flagship.enabled?(:feature)).to be false
       end
+
+      it 'can be extended' do
+        Flagship.define :base do
+          def is_foo(context)
+            true
+          end
+        end
+
+        Flagship.define :extending, extend: :base do
+          enable :feature, if: :is_foo
+        end
+
+        Flagship.select_flagset(:extending)
+        expect(Flagship.enabled?(:feature)).to be true
+      end
+
+      it 'can be overridden' do
+        Flagship.define :base do
+          def is_foo(context)
+            true
+          end
+        end
+
+        Flagship.define :extending, extend: :base do
+          def is_foo(context)
+            false
+          end
+
+          enable :feature, if: :is_foo
+        end
+
+        Flagship.select_flagset(:extending)
+        expect(Flagship.enabled?(:feature)).to be false
+      end
     end
   end
 end
