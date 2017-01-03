@@ -252,6 +252,24 @@ RSpec.describe Flagship do
         expect(flagset.enabled?(:quz)).to be false
       end
 
+      it 'can be placed after flag definitions' do
+        Flagship.define :foo do
+          enable :qux, if: :is_true
+          enable :quz, if: :is_false
+
+          def is_true(context)
+            true
+          end
+
+          def is_false(context)
+            false
+          end
+        end
+
+        expect(flagset.enabled?(:qux)).to be true
+        expect(flagset.enabled?(:quz)).to be false
+      end
+
       it 'are not shared with other flagship declarations' do
         Flagship.define :foo do
           def is_true(context)
@@ -265,6 +283,8 @@ RSpec.describe Flagship do
           Flagship.define :bar do
             enable :baz, if: :is_true
           end
+          Flagship.select_flagset(:bar)
+          Flagship.enabled?(:baz)
         }.to raise_error(NameError)
       end
 
