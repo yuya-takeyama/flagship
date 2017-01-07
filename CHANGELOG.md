@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.5.0] - 2017-01-07
+
+- Documented about helper methods [#21](https://github.com/yuya-takeyama/flagship/pull/21)
+- Helper methods can be specified as a `Symbol` [#21](https://github.com/yuya-takeyama/flagship/pull/21)
+- Helper methods are extended [#22](https://github.com/yuya-takeyama/flagship/pull/22)
+
 ## [0.4.0] - 2016-12-23
 
 ### Added
