@@ -20,8 +20,12 @@ module Flagship
       current_flagset.enabled?(key)
     end
 
-    def set_context(key, value)
-      default_context.__set(key, value)
+    def set_context(key_or_hash, value=nil)
+      if key_or_hash.is_a?(Hash)
+        default_context.merge!(key_or_hash)
+      else
+        default_context.__set(key_or_hash, value)
+      end
     end
 
     def select_flagset(key)

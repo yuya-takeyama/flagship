@@ -135,6 +135,32 @@ RSpec.describe Flagship do
       expect(Flagship.enabled?(:bar)).to be true
       expect(Flagship.enabled?(:baz)).to be false
     end
+
+    it 'can set a hash' do
+      Flagship.set_context var: 'VAR', foo: 'BAR'
+
+      Flagship.define :foo do
+        enable :bar, if: ->(context){ context.var == 'VAR' }
+        enable :baz, if: ->(context){ context.foo == 'BAR' }
+      end
+
+      Flagship.select_flagset(:foo)
+
+      expect(Flagship.enabled?(:bar)).to be true
+      expect(Flagship.enabled?(:baz)).to be true
+    end
+  end
+
+  describe '.default_context' do
+    it 'acts like a hash' do
+      Flagship.set_context alpha: 'A', bravo: 'B'
+      expect(Flagship.default_context[:alpha]).to eq 'A'
+      expect(Flagship.default_context[:bravo]).to eq 'B'
+      expect(Flagship.default_context[:charlie]).to be_nil
+
+      Flagship.default_context.clear
+      expect(Flagship.default_context[:alpha]).to be_nil
+    end
   end
 
   describe '.features' do
