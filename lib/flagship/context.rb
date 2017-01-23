@@ -1,6 +1,6 @@
 class Flagship::Context
   extend Forwardable
-  def_delegators :@values, :[], :fetch, :to_h, :clear, :merge!, :update
+  def_delegators :@values, :clear
 
   def initialize
     @values = {}

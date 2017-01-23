@@ -151,18 +151,6 @@ RSpec.describe Flagship do
     end
   end
 
-  describe '.default_context' do
-    it 'acts like a hash' do
-      Flagship.set_context alpha: 'A', bravo: 'B'
-      expect(Flagship.default_context[:alpha]).to eq 'A'
-      expect(Flagship.default_context[:bravo]).to eq 'B'
-      expect(Flagship.default_context[:charlie]).to be_nil
-
-      Flagship.default_context.clear
-      expect(Flagship.default_context[:alpha]).to be_nil
-    end
-  end
-
   describe '.features' do
     it 'returns Feature objects' do
       Flagship.define :foo do

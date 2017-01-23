@@ -22,7 +22,7 @@ module Flagship
 
     def set_context(key_or_hash, value=nil)
       if key_or_hash.is_a?(Hash)
-        default_context.merge!(key_or_hash)
+        key_or_hash.each { |k, v| default_context.__set(k, v) }
       else
         default_context.__set(key_or_hash, value)
       end
