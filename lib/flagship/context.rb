@@ -1,4 +1,7 @@
 class Flagship::Context
+  extend Forwardable
+  def_delegators :@values, :clear
+
   def initialize
     @values = {}
   end

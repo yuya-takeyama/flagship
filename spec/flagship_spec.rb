@@ -135,6 +135,20 @@ RSpec.describe Flagship do
       expect(Flagship.enabled?(:bar)).to be true
       expect(Flagship.enabled?(:baz)).to be false
     end
+
+    it 'can set a hash' do
+      Flagship.set_context var: 'VAR', foo: 'BAR'
+
+      Flagship.define :foo do
+        enable :bar, if: ->(context){ context.var == 'VAR' }
+        enable :baz, if: ->(context){ context.foo == 'BAR' }
+      end
+
+      Flagship.select_flagset(:foo)
+
+      expect(Flagship.enabled?(:bar)).to be true
+      expect(Flagship.enabled?(:baz)).to be true
+    end
   end
 
   describe '.features' do
