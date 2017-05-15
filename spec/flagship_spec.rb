@@ -1,8 +1,4 @@
 RSpec.describe Flagship do
-  before do
-    Flagship.clear_state
-  end
-
   describe '.define' do
     it 'defines a flagset' do
       Flagship.define(:foo) do
