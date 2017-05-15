@@ -1,5 +1,16 @@
 # Change Log
 
+## [0.6.0] - 2017-05-15
+
+### Added
+
+- Add `Flagship.with_context` method to apply temporal changes to context variables [#26](https://github.com/yuya-takeyama/flagship/pull/26)
+- Now `Flagship.clear_state` clears context variables as well [#27](https://github.com/yuya-takeyama/flagship/pull/27)
+
+### Changed
+
+- Allow `Flagship.set_context` to set multiple variables at once using `Hash` [#25](https://github.com/yuya-takeyama/flagship/pull/25)
+
 ## [0.5.0] - 2017-01-07
 
 - Documented about helper methods [#21](https://github.com/yuya-takeyama/flagship/pull/21)
