@@ -28,6 +28,12 @@ module Flagship
       end
     end
 
+    def with_context(values, &block)
+      default_context.with_values values do
+        block.call
+      end
+    end
+
     def select_flagset(key)
       @current_flagset = default_flagsets_container.get(key)
     end

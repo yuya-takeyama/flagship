@@ -27,4 +27,12 @@ class Flagship::Context
   def respond_to_missing?(name, include_private = false)
     @values.key?(name) or super
   end
+
+  def with_values(values, &block)
+    original_values = @values
+    @values = @values.dup.merge(values)
+    block.call
+  ensure
+    @values = original_values
+  end
 end

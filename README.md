@@ -62,6 +62,24 @@ Or you can set a method too.
 Flagship.set_context :current_user, method(:current_user)
 ```
 
+### Apply temporal changes to context variables
+
+Using `Flagship.with_context` method, you can override context variables temporarily.
+
+```rb
+class User
+  def enabled_features
+    Flagship.with_context current_user: self do
+      Flagship.features.enabled.map(&:key)
+    end
+  end
+end
+```
+
+It's useful when you implement a method using `Flagship` into some domain objects.
+
+By using this, values specified in the argument is overridden and other values are inherited.
+
 ### Extend flagset
 
 ```rb
