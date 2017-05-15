@@ -151,6 +151,53 @@ RSpec.describe Flagship do
     end
   end
 
+  describe '.with_context' do
+    before do
+      Flagship.set_context :foo, 'FOO'
+
+      Flagship.define :foo do
+        enable :foo,      if: ->(context) { context.foo == 'FOO' }
+        enable :feature1, if: ->(context) { context.ctx1 == 'CTX1' }
+        enable :feature2, if: ->(context) { context.ctx2 == 'CTX2' }
+      end
+
+      Flagship.select_flagset(:foo)
+    end
+
+    it 'sets the context variables and they are accessible within the block' do
+      Flagship.with_context ctx1: 'CTX1', ctx2: 'CTX2' do
+        expect(Flagship.default_context.ctx1).to eq 'CTX1'
+        expect(Flagship.default_context.ctx2).to eq 'CTX2'
+
+        expect(Flagship.enabled?(:feature1)).to be true
+        expect(Flagship.enabled?(:feature2)).to be true
+      end
+    end
+
+    it 'is not accessible out of the block' do
+      Flagship.with_context ctx1: 'CTX1', ctx2: 'CTX2' do
+      end
+
+      expect { Flagship.default_context.ctx1 }.to raise_error(NoMethodError)
+      expect { Flagship.default_context.ctx2 }.to raise_error(NoMethodError)
+
+      expect { Flagship.enabled?(:feature1) }.to raise_error(NoMethodError)
+      expect { Flagship.enabled?(:feature2) }.to raise_error(NoMethodError)
+    end
+
+    it 'inherits context variables which is set before' do
+      Flagship.set_context(:foo, 'FOO')
+
+      Flagship.with_context ctx1: 'CTX1', ctx2: 'CTX2' do
+        expect(Flagship.default_context.foo).to eq 'FOO'
+        expect(Flagship.enabled?(:foo)).to be true
+      end
+
+      expect(Flagship.default_context.foo).to eq 'FOO'
+      expect(Flagship.enabled?(:foo)).to be true
+    end
+  end
+
   describe '.features' do
     it 'returns Feature objects' do
       Flagship.define :foo do
