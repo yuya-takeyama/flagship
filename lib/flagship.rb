@@ -61,6 +61,7 @@ module Flagship
     def clear_state
       @default_flagsts_container = nil
       @current_flagset = nil
+      @default_context = nil
     end
   end
 end

@@ -218,6 +218,26 @@ Flagship.define :production do
 end
 ```
 
+### Testing
+
+#### RSpec
+
+It's recommended to clear state of `Flagship` before the suite and after the each tests.
+
+You can do it by configuring like below:
+
+```rb
+RSpec.configure do |config|
+  config.before(:suite) do
+    Flagship.clear_state
+  end
+
+  config.after(:each) do
+    Flagship.clear_state
+  end
+end
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
