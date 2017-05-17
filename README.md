@@ -229,11 +229,13 @@ You can do it by configuring like below:
 ```rb
 RSpec.configure do |config|
   config.before(:suite) do
-    Flagship.clear_state
+    Flagship.clear_context
+    Flagship.clear_current_flagset
   end
 
   config.after(:each) do
-    Flagship.clear_state
+    Flagship.clear_context
+    Flagship.clear_current_flagset
   end
 end
 ```
