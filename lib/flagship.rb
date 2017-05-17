@@ -59,8 +59,20 @@ module Flagship
     end
 
     def clear_state
+      clear_flagsets_container
+      clear_current_flagset
+      clear_context
+    end
+
+    def clear_flagsets_container
       @default_flagsts_container = nil
+    end
+
+    def clear_current_flagset
       @current_flagset = nil
+    end
+
+    def clear_context
       @default_context && @default_context.clear
     end
   end
