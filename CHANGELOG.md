@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.6.1] - 2017-05-17
+
+### Added
+
+- Add separated methods to clear state [#30](https://github.com/yuya-takeyama/flagship/pull/30)
+
 ## [0.6.0] - 2017-05-15
 
 ### Added
