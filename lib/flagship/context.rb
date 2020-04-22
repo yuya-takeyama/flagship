@@ -1,3 +1,5 @@
+require 'forwardable'
+
 class Flagship::Context
   extend Forwardable
   def_delegators :@values, :clear
