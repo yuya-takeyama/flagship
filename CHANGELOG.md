@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.7.0] - 2020-05-01
+
+### Fixed
+
+- Make context thread safe [#32](https://github.com/yuya-takeyama/flagship/pull/32) ([@mtsmfm](https://github.com/mtsmfm))
+
 ## [0.6.1] - 2017-05-17
 
 ### Added
