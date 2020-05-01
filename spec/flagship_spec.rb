@@ -145,6 +145,39 @@ RSpec.describe Flagship do
       expect(Flagship.enabled?(:bar)).to be true
       expect(Flagship.enabled?(:baz)).to be true
     end
+
+    it 'should be thread safe' do
+      Flagship.define :foo do
+        enable :foo, if: ->(context) {
+          context.current_user == 'foo'
+        }
+      end
+
+      Flagship.select_flagset(:foo)
+
+      thread_a = Thread.new do
+        Flagship.set_context :current_user, 'foo'
+
+        Thread.stop
+
+        Flagship.enabled?(:foo)
+      end
+
+      thread_b = Thread.new do
+        Flagship.set_context :current_user, 'bar'
+
+        Flagship.enabled?(:foo)
+      end
+
+      sleep 0.1 until thread_a.stop?
+
+      thread_b.join
+      thread_a.run
+      thread_a.join
+
+      expect(thread_a.value).to eq true
+      expect(thread_b.value).to eq false
+    end
   end
 
   describe '.with_context' do
